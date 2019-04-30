@@ -13,12 +13,16 @@ function EditTodoForm({ toggleIsEditing, text, editTodo, id }) {
         editTodo(id, state);
         toggleIsEditing();
       }}
+      style={{
+        marginLeft: "1rem",
+        width: "50%"
+      }}
     >
-      <TextField value={state} onChange={handleChange} fullWidth />
-      {/* <button style={{ margin: "1rem" }} onClick={toggleIsEditing}>
-        Cancel
-      </button> */}
+      <TextField autoFocus value={state} onChange={handleChange} fullWidth />
       <button type="submit">Submit</button>
+      <button style={{ margin: "1rem" }} onClick={toggleIsEditing}>
+        Cancel
+      </button>
     </form>
   );
 }

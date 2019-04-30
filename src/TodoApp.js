@@ -1,54 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Grid from "@material-ui/core/Grid";
-import uuid from "uuid/v4";
 
 import TodoList from "./TodoList";
 import TodoForm from "./TodoForm";
-
-const initialTodos = [
-  { id: 1, task: "clean a fishtank", completed: false },
-  { id: 2, task: "wash a car", completed: false },
-  { id: 3, task: "grow beard", completed: false }
-];
+import useTodoState from "./hooks/useTodoState";
 
 function TodoApp() {
-  const [todos, setTodos] = useState(initialTodos);
+  const initialTodos = JSON.parse(window.localStorage.getItem("todos")) || [];
 
-  const addTodo = todoText => {
-    setTodos([
-      ...todos,
-      {
-        id: uuid(),
-        task: todoText,
-        completed: false
-      }
-    ]);
-  };
+  const [todos, addTodo, removeTodo, toggleTodo, editTodo] = useTodoState(
+    initialTodos
+  );
 
-  const removeTodo = todoId => {
-    const filteredTodos = todos.filter(todo => todo.id !== todoId);
-    setTodos(filteredTodos);
-  };
-
-  const toggleTodo = todoId => {
-    const toggledTodosArr = todos.map(todo =>
-      todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
-    );
-
-    setTodos(toggledTodosArr);
-  };
-
-  const editTodo = (todoId, editedTask) => {
-    const toggledTodosArr = todos.map(todo =>
-      todo.id === todoId ? { ...todo, task: editedTask } : todo
-    );
-
-    setTodos(toggledTodosArr);
-  };
+  useEffect(() => {
+    window.localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   return (
     <Paper
@@ -68,12 +38,14 @@ function TodoApp() {
       <Grid container justify="center">
         <Grid item xs={11} md={8} lg={4}>
           <TodoForm addTodo={addTodo} />
-          <TodoList
-            todos={todos}
-            removeTodo={removeTodo}
-            toggleTodo={toggleTodo}
-            editTodo={editTodo}
-          />
+          {todos && (
+            <TodoList
+              todos={todos}
+              removeTodo={removeTodo}
+              toggleTodo={toggleTodo}
+              editTodo={editTodo}
+            />
+          )}
         </Grid>
       </Grid>
     </Paper>
